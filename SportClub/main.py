@@ -21,7 +21,7 @@ def create_tables():
                         name TEXT NOT NULL,
                         duration INTEGER NOT NULL,
                         cost REAL NOT NULL,
-                        start_time TEXT NOT NULL''')
+                        start_time TEXT NOT NULL)''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS purchases (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -179,8 +179,12 @@ class AppGUI:
         if name and duration and cost and hours:
             conn = connect_db()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO subscriptions (name, duration, cost, start_time) VALUES (?, ?, ?, ?)", 
-                           (name, duration, cost, hours))
+
+            start_day = datetime.now().strftime("%Y-%m-%d")
+
+            cursor.execute("INSERT INTO subscriptions (name, duration, cost, start_time, start_day) VALUES (?, ?, ?, ?, ?)", 
+                        (name, duration, cost, hours, start_day))
+
             conn.commit()
             conn.close()
             self.display_subscriptions_for_purchase()
