@@ -29,6 +29,8 @@ class AuctionApp:
         except requests.exceptions.RequestException:
             messagebox.showerror("Ошибка", "Не удается подключиться к серверу.")
 
+        self.root.after(2000, self.update_lots)
+
     def display_lots(self, lots):
         for widget in self.lots_frame.winfo_children():
             widget.destroy()
