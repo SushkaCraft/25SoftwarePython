@@ -143,48 +143,72 @@ class AppGUI:
             self.tree.insert("", "end", values=(book[0], book[1], book[2], borrowed_info, return_date))
 
     def borrow_book(self):
-        book_id = self.entry_borrower.get()
+        book_identifier = self.entry_title.get()
         borrower = self.entry_borrower.get()
-        if book_id and borrower:
-            conn = connect_db()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM books WHERE id = ?", (book_id,))
-            book = cursor.fetchone()
-            if book:
-                if book[3] is None:
-                    cursor.execute("UPDATE books SET borrowed_by = ?, borrow_date = ? WHERE id = ?", 
-                                   (borrower, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), book_id))
-                    conn.commit()
-                    messagebox.showinfo("Успех", f"Книга '{book[1]}' взята {borrower}!")
-                    self.display_books_knowledge_base()
-                else:
-                    messagebox.showerror("Ошибка", "Эта книга уже взята!")
-            else:
-                messagebox.showerror("Ошибка", "Книга с таким ID не существует!")
-            conn.close()
+
+        if not book_identifier or not borrower:
+            messagebox.showerror("Ошибка", "Введите ID или название книги и имя заемщика!")
+            return
+
+        conn = connect_db()
+        cursor = conn.cursor()
+
+        if book_identifier.isdigit():
+            cursor.execute("SELECT * FROM books WHERE id = ?", (book_identifier,))
         else:
-            messagebox.showerror("Ошибка", "Введите ID книги и имя заемщика!")
+            cursor.execute("SELECT * FROM books WHERE title = ?", (book_identifier,))
+        book = cursor.fetchone()
+
+        if not book:
+            messagebox.showerror("Ошибка", "Книга с таким ID или названием не найдена!")
+            conn.close()
+            return
+
+        if book[3] is not None:
+            messagebox.showerror("Ошибка", f"Книга '{book[1]}' уже взята {book[3]}!")
+            conn.close()
+            return
+
+        cursor.execute("UPDATE books SET borrowed_by = ?, borrow_date = ? WHERE id = ?", 
+                    (borrower, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), book[0]))
+        conn.commit()
+        conn.close()
+
+        messagebox.showinfo("Успех", f"Книга '{book[1]}' успешно взята {borrower}!")
+        self.display_books_knowledge_base()
 
     def return_book(self):
-        book_id = self.entry_borrower.get()
-        if book_id:
-            conn = connect_db()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM books WHERE id = ?", (book_id,))
-            book = cursor.fetchone()
-            if book:
-                if book[3] is not None:
-                    cursor.execute("UPDATE books SET borrowed_by = NULL, borrow_date = NULL WHERE id = ?", (book_id,))
-                    conn.commit()
-                    messagebox.showinfo("Успех", f"Книга '{book[1]}' возвращена!")
-                    self.display_books_knowledge_base()
-                else:
-                    messagebox.showerror("Ошибка", "Эта книга не была взята!")
-            else:
-                messagebox.showerror("Ошибка", "Книга с таким ID не существует!")
-            conn.close()
+        book_identifier = self.entry_title.get()
+
+        if not book_identifier:
+            messagebox.showerror("Ошибка", "Введите ID или название книги для возврата!")
+            return
+
+        conn = connect_db()
+        cursor = conn.cursor()
+
+        if book_identifier.isdigit():
+            cursor.execute("SELECT * FROM books WHERE id = ?", (book_identifier,))
         else:
-            messagebox.showerror("Ошибка", "Введите ID книги для возврата!")
+            cursor.execute("SELECT * FROM books WHERE title = ?", (book_identifier,))
+        book = cursor.fetchone()
+
+        if not book:
+            messagebox.showerror("Ошибка", "Книга с таким ID или названием не найдена!")
+            conn.close()
+            return
+
+        if book[3] is None:
+            messagebox.showerror("Ошибка", f"Книга '{book[1]}' не была взята!")
+            conn.close()
+            return
+
+        cursor.execute("UPDATE books SET borrowed_by = NULL, borrow_date = NULL WHERE id = ?", (book[0],))
+        conn.commit()
+        conn.close()
+
+        messagebox.showinfo("Успех", f"Книга '{book[1]}' успешно возвращена!")
+        self.display_books_knowledge_base()
 
 if __name__ == "__main__":
     root = tk.Tk()
