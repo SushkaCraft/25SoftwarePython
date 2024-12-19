@@ -25,6 +25,8 @@ class AppGUI:
         self.root.geometry("1080x480")
         self.root.title("Управление библиотекой")
 
+        create_table()
+
         style = ttk.Style()
         style.configure('TLabel', font=('Arial', 12), padding=5)
         style.configure('TButton', font=('Arial', 12), padding=5)

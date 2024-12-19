@@ -21,7 +21,8 @@ def create_tables():
                         name TEXT NOT NULL,
                         duration INTEGER NOT NULL,
                         cost REAL NOT NULL,
-                        start_time TEXT NOT NULL)''')
+                        start_time TEXT NOT NULL,
+                        start_day TEXT)''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS purchases (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,

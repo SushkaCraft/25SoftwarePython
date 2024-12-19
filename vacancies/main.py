@@ -94,6 +94,7 @@ class AppGUI:
 
             messagebox.showinfo("Успех", f"Вакансия на должность '{position}' создана!")
             self.display_vacancies()
+            self.load_vacancies_for_processing()
         else:
             messagebox.showerror("Ошибка", "Введите все данные для вакансии!")
 
