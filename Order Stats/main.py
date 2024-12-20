@@ -181,8 +181,11 @@ class AppGUI:
             self.product_listbox.insert(tk.END, f"ID: {product[0]} - {product[1]} - Цена: {product[2]} - В наличии: {product[3]}")
 
     def add_to_cart(self):
+        if not hasattr(self, 'product_listbox') or not self.product_listbox.winfo_exists():
+            messagebox.showerror("Ошибка", "Список товаров недоступен.")
+            return
+            
         selected_product = self.product_listbox.curselection()
-        print("selected_product:", selected_product)
         if not selected_product:
             messagebox.showerror("Ошибка", "Пожалуйста, выберите товар.")
             return
@@ -378,8 +381,8 @@ class AppGUI:
         products = c.fetchall()
         conn.close()
 
-        self.product_listbox = tk.Listbox(self.edit_product_window, width=50, height=10)
-        self.product_listbox.pack(padx=10, pady=10)
+        self.cart_product_listbox = tk.Listbox(self.cart_tab, width=50, height=10)
+        self.edit_product_listbox = tk.Listbox(self.edit_product_window, width=50, height=10)
 
         for product in products:
             self.product_listbox.insert(tk.END, f"ID: {product[0]} - {product[1]} - Цена: {product[2]} - В наличии: {product[3]}")
