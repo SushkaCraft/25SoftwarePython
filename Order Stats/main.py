@@ -154,9 +154,11 @@ class AppGUI:
     def create_cart_tab(self):
         self.cart_label = tk.Label(self.cart_tab, text="Корзина покупок", font=("Arial", 18))
         self.cart_label.grid(row=0, column=0, padx=10, pady=10)
-        
+
         self.product_listbox = tk.Listbox(self.cart_tab, width=50, height=10)
         self.product_listbox.grid(row=1, column=0, padx=10, pady=10)
+
+        self.product_listbox.delete(0, tk.END)
 
         self.load_products_for_cart()
         
@@ -177,6 +179,7 @@ class AppGUI:
         conn.close()
 
         self.product_listbox.delete(0, tk.END)
+        
         for product in products:
             self.product_listbox.insert(tk.END, f"ID: {product[0]} - {product[1]} - Цена: {product[2]} - В наличии: {product[3]}")
 
@@ -381,8 +384,8 @@ class AppGUI:
         products = c.fetchall()
         conn.close()
 
-        self.cart_product_listbox = tk.Listbox(self.cart_tab, width=50, height=10)
-        self.edit_product_listbox = tk.Listbox(self.edit_product_window, width=50, height=10)
+        self.product_listbox = tk.Listbox(self.edit_product_window, width=50, height=10)
+        self.product_listbox.pack(padx=10, pady=10)
 
         for product in products:
             self.product_listbox.insert(tk.END, f"ID: {product[0]} - {product[1]} - Цена: {product[2]} - В наличии: {product[3]}")
@@ -514,6 +517,8 @@ class AppGUI:
         self.edit_order_button.pack(pady=10)
 
     def load_orders(self):
+        self.orders_listbox.delete(0, tk.END)
+
         conn = sqlite3.connect('shop.db')
         c = conn.cursor()
         c.execute('SELECT id, customer_name, total_price, order_date FROM orders')
