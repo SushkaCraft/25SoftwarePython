@@ -46,7 +46,7 @@ class Database:
 class EventApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Управление мероприятиями")
+        self.root.title("Создание мероприятиями")
         self.root.geometry("960x480")
 
         style = ttk.Style()

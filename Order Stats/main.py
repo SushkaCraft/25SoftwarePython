@@ -517,7 +517,7 @@ class AppGUI:
         self.edit_order_button.pack(pady=10)
 
     def load_orders(self):
-        self.orders_listbox.delete(0, tk.END)
+        # self.orders_listbox.delete(0, tk.END)
 
         conn = sqlite3.connect('shop.db')
         c = conn.cursor()

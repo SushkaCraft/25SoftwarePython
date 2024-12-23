@@ -35,7 +35,8 @@ def create_db():
             id INTEGER PRIMARY KEY,
             meal_time TEXT NOT NULL,
             start_time TEXT NOT NULL,
-            end_time TEXT NOT NULL
+            end_time TEXT NOT NULL,
+            UNIQUE(meal_time, start_time)
         )
     ''')
     conn.commit()
@@ -45,7 +46,7 @@ class AppGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Автоматизация школьного питания")
-        self.root.geometry("800x380")
+        self.root.geometry("800x460")
         
         self.tab_control = ttk.Notebook(root)
         

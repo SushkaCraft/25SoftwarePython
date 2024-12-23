@@ -3,7 +3,6 @@ from tkinter import ttk, messagebox
 import sqlite3
 from datetime import datetime, timedelta
 
-# Создание базы данных и таблиц
 def create_db():
     conn = sqlite3.connect("school_diary.db")
     cursor = conn.cursor()
